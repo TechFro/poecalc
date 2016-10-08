@@ -1,0 +1,58 @@
+
+<style>input{
+  display:block;
+}</style>
+
+<label for="physical"> physical damage</label>
+<input type="text" name="physical" id="physical" value="100"/>
+<label for="lightning"> lightning damage</label>
+<input type="text" name="lightning" id="lightning" value="0"/>
+<label for="fire"> fire damage</label>
+<input type="text" name="fire" id="fire" value="0"/>
+<br>
+<label for="phyM"> physical multiplier (%)</label>
+<input type="text" name="phyM" id="phyM" value="100"/>
+<label for="lightningM"> lightning multiplier  (%)</label>
+<input type="text" name="lightningM" id="lightningM" value="100"/>
+<label for="fireM"> fire multiplier  (%)</label>
+<input type="text" name="fireM" id="fireM" value="100"/>
+<label for="eM"> elemental multiplier  (%)</label>
+<input type="text" name="eM" id="eM" value="100"/>
+
+<input type="button" onClick="calc()" value="run"/>
+<br>
+<div id="damage">0</div>
+
+<script>
+function pdam(){return parseFloat(document.getElementById("physical").value)}
+function ldam() {return parseFloat(document.getElementById("lightning").value)}
+function fdam() {return parseFloat(document.getElementById("fire").value)}
+function pm() {return $.perc(document.getElementById("phyM").value)}
+function lm() {return $.perc(document.getElementById("lightningM").value)}
+function fm() {return $.perc(document.getElementById("fireM").value)}
+function em() {return $.perc(document.getElementById("eM").value)}
+function total() {return parseFloat(document.getElementById("damage").value)}
+
+function calc(){
+var div = document.getElementById("damage")
+  div.innerHTML = normal() + '  |  ' + avatar() + '<br>' + div.innerHTML ;
+}
+
+function normal(){
+return (pdam()*pm()) + $.elem(ldam(),lm()) + $.elem(fdam(), fm())
+}
+
+function avatar(){
+console.log($.elem((.5 * ldam()),lm()))
+var fdamAdded = (.5 * pdam() * pm()) + $.elem((.5 * ldam()),lm())
+var fdamT = fdam() + fdamAdded
+return $.elem(fdamT, fm())
+}
+
+
+var $ = {
+perc: function(string){return parseFloat(string)/100},
+elem: function(float, specM){return ((float + ((float * specM) - float) + ((float * em()) - float)))}
+
+}
+</script>
