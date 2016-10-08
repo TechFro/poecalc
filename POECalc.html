@@ -1,8 +1,11 @@
 
-<style>input{
+<style>
+  input{
   display:block;
-}</style>
+  }
+</style>
 
+<span class="sparklines" sparkType="bar" sparkBarColor="green"><!-- 1,2,3,4,3,2,1 --></span><br>
 <label for="physical"> physical damage</label>
 <input type="text" name="physical" id="physical" value="100"/>
 <label for="lightning"> lightning damage</label>
@@ -19,19 +22,27 @@
 <label for="eM"> elemental multiplier  (%)</label>
 <input type="text" name="eM" id="eM" value="100"/>
 
-<input type="button" onClick="calc()" value="run"/>
+<input type="button" onClick="spoogete.calc()" value="run"/>
 <br>
 <div id="damage">0</div>
+<script src="jquery-3.1.1.js"></script>
+<script src="sparkline.js" /></script>
 
 <script>
+var spoogete = (function($){
 function pdam(){return parseFloat(document.getElementById("physical").value)}
 function ldam() {return parseFloat(document.getElementById("lightning").value)}
 function fdam() {return parseFloat(document.getElementById("fire").value)}
-function pm() {return $.perc(document.getElementById("phyM").value)}
-function lm() {return $.perc(document.getElementById("lightningM").value)}
-function fm() {return $.perc(document.getElementById("fireM").value)}
-function em() {return $.perc(document.getElementById("eM").value)}
+function pm() {return f_.perc(document.getElementById("phyM").value)}
+function lm() {return f_.perc(document.getElementById("lightningM").value)}
+function fm() {return f_.perc(document.getElementById("fireM").value)}
+function em() {return f_.perc(document.getElementById("eM").value)}
 function total() {return parseFloat(document.getElementById("damage").value)}
+
+document.addEventListener('DOMContentLoaded', function() {
+$('.sparklines').sparkline('html', { enableTagOptions: true });
+}, false);
+
 
 function calc(){
 var div = document.getElementById("damage")
@@ -39,20 +50,25 @@ var div = document.getElementById("damage")
 }
 
 function normal(){
-return (pdam()*pm()) + $.elem(ldam(),lm()) + $.elem(fdam(), fm())
+return (pdam()*pm()) + f_.elem(ldam(),lm()) + f_.elem(fdam(), fm())
 }
 
 function avatar(){
-console.log($.elem((.5 * ldam()),lm()))
-var fdamAdded = (.5 * pdam() * pm()) + $.elem((.5 * ldam()),lm())
+console.log(f_.elem((.5 * ldam()),lm()))
+var fdamAdded = (.5 * pdam() * pm()) + f_.elem((.5 * ldam()),lm())
 var fdamT = fdam() + fdamAdded
-return $.elem(fdamT, fm())
+return f_.elem(fdamT, fm())
 }
 
 
-var $ = {
+var f_ = {
 perc: function(string){return parseFloat(string)/100},
 elem: function(float, specM){return ((float + ((float * specM) - float) + ((float * em()) - float)))}
 
 }
+
+return{
+calc: calc
+};
+  })(jQuery);
 </script>
